@@ -337,17 +337,28 @@ void ToolMain::UpdateInput(MSG * msg)
 		m_toolInputCommands.right = true;
 	}
 	else m_toolInputCommands.right = false;
-	//rotation
+	//up down
 	if (m_keyArray['E'])
 	{
-		m_toolInputCommands.rotRight = true;
+		m_toolInputCommands.Up = true;
 	}
-	else m_toolInputCommands.rotRight = false;
+	else m_toolInputCommands.Up = false;
 	if (m_keyArray['Q'])
 	{
-		m_toolInputCommands.rotLeft = true;
+		m_toolInputCommands.Down = true;
 	}
-	else m_toolInputCommands.rotLeft = false;
+	else m_toolInputCommands.Down = false;
+	//rotations
+
+	if(m_keyArray[37] | m_keyArray[38] | m_keyArray[39] | m_keyArray[40])
+	{
+		m_toolInputCommands.PitchYaw.x = (  1 * m_keyArray[37]) + (-1 * m_keyArray[39]);
+		m_toolInputCommands.PitchYaw.y = (- 1 * m_keyArray[40]) + ( 1 * m_keyArray[38]);
+	}
+	else
+	{
+		m_toolInputCommands.PitchYaw = DirectX::XMFLOAT2( 0,0 );
+	}
 
 	//WASD
 }

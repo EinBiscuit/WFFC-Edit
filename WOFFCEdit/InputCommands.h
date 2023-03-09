@@ -6,6 +6,7 @@ struct InputCommands
 	bool back;
 	bool right;
 	bool left;
-	bool rotRight;
-	bool rotLeft;
+	bool Up;
+	bool Down;
+	DirectX::SimpleMath::Vector2 PitchYaw;
 };

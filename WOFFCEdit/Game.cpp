@@ -145,14 +145,8 @@ void Game::Update(DX::StepTimer const& timer)
 	Vector3 planarMotionVector = m_camLookDirection;
 	planarMotionVector.y = 0.0;
 
-	if (m_InputCommands.rotRight)
-	{
-		m_camOrientation.y -= m_camRotRate;
-	}
-	if (m_InputCommands.rotLeft)
-	{
-		m_camOrientation.y += m_camRotRate;
-	}
+	m_camOrientation.y += m_InputCommands.PitchYaw.x * m_camRotRate;
+	m_camOrientation.x += m_InputCommands.PitchYaw.y * m_camRotRate;
 
 	//create look direction from Euler angles in m_camOrientation
 	m_camLookDirection.x = sin((m_camOrientation.y)*3.1415 / 180);
@@ -161,6 +155,15 @@ void Game::Update(DX::StepTimer const& timer)
 
 	//create right vector from look Direction
 	m_camLookDirection.Cross(Vector3::UnitY, m_camRight);
+
+	if (m_InputCommands.Up)
+	{
+		m_camPosition.y += m_movespeed;
+	}
+	if (m_InputCommands.Down)
+	{
+		m_camPosition.y -= m_movespeed;
+	}
 
 	//process input and update stuff
 	if (m_InputCommands.forward)
@@ -179,6 +182,8 @@ void Game::Update(DX::StepTimer const& timer)
 	{
 		m_camPosition -= m_camRight*m_movespeed;
 	}
+
+	
 
 	//update lookat point
 	m_camLookAt = m_camPosition + m_camLookDirection;
