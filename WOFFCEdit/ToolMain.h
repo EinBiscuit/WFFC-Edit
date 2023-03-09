@@ -47,7 +47,7 @@ private:	//variables
 	int m_width;		//dimensions passed to directX
 	int m_height;
 	int m_currentChunk;			//the current chunk of thedatabase that we are operating on.  Dictates loading and saving. 
-	
 
-	
+	DirectX::SimpleMath::Vector2 MouseXY_old;
+	DirectX::SimpleMath::Vector2 DeltaMouseXY;
 };

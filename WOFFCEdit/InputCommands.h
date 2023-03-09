@@ -8,5 +8,6 @@ struct InputCommands
 	bool left;
 	bool Up;
 	bool Down;
-	DirectX::SimpleMath::Vector2 PitchYaw;
+	DirectX::SimpleMath::Vector2 YawPitch;
+	bool FreeCam;
 };

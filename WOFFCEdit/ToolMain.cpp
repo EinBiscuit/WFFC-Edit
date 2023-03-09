@@ -306,10 +306,22 @@ void ToolMain::UpdateInput(MSG * msg)
 		break;
 
 	case WM_MOUSEMOVE:
+		if(m_toolInputCommands.FreeCam)
+		{
+			//POINT point;
+			//GetCursorPos(&point);
+			//m_toolInputCommands.YawPitch
+			
+		}
 		break;
 
-	case WM_LBUTTONDOWN:	//mouse button down,  you will probably need to check when its up too
+	case WM_RBUTTONDOWN:	//mouse button down,  you will probably need to check when its up too
 		//set some flag for the mouse button in inputcommands
+		m_toolInputCommands.FreeCam = true;
+		break;
+
+	case WM_RBUTTONUP:
+		m_toolInputCommands.FreeCam = false;
 		break;
 
 	}
@@ -350,14 +362,21 @@ void ToolMain::UpdateInput(MSG * msg)
 	else m_toolInputCommands.Down = false;
 	//rotations
 
-	if(m_keyArray[37] | m_keyArray[38] | m_keyArray[39] | m_keyArray[40])
+	if (!m_toolInputCommands.FreeCam)
 	{
-		m_toolInputCommands.PitchYaw.x = (  1 * m_keyArray[37]) + (-1 * m_keyArray[39]);
-		m_toolInputCommands.PitchYaw.y = (- 1 * m_keyArray[40]) + ( 1 * m_keyArray[38]);
+		if (m_keyArray[37] | m_keyArray[38] | m_keyArray[39] | m_keyArray[40])
+		{
+			m_toolInputCommands.YawPitch.x = (-1 * m_keyArray[37]) + (1 * m_keyArray[39]);
+			m_toolInputCommands.YawPitch.y = (-1 * m_keyArray[40]) + (1 * m_keyArray[38]);
+		}
+		else
+		{
+			m_toolInputCommands.YawPitch = DirectX::XMFLOAT2(0, 0);
+		}
 	}
 	else
 	{
-		m_toolInputCommands.PitchYaw = DirectX::XMFLOAT2( 0,0 );
+		m_toolInputCommands.YawPitch = DirectX::XMFLOAT2(1, 0);
 	}
 
 	//WASD

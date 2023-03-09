@@ -145,12 +145,14 @@ void Game::Update(DX::StepTimer const& timer)
 	Vector3 planarMotionVector = m_camLookDirection;
 	planarMotionVector.y = 0.0;
 
-	m_camOrientation.y += m_InputCommands.PitchYaw.x * m_camRotRate;
-	m_camOrientation.x += m_InputCommands.PitchYaw.y * m_camRotRate;
+	m_camOrientation.y += m_InputCommands.YawPitch.x * m_camRotRate;
+	m_camOrientation.z += m_InputCommands.YawPitch.y * m_camRotRate;
 
 	//create look direction from Euler angles in m_camOrientation
-	m_camLookDirection.x = sin((m_camOrientation.y)*3.1415 / 180);
-	m_camLookDirection.z = cos((m_camOrientation.y)*3.1415 / 180);
+	m_camLookDirection.x = cos(m_camOrientation.y * 3.1415 / 180) * cos(m_camOrientation.z * 3.1415 / 180);
+	m_camLookDirection.y = sin(m_camOrientation.z * 3.1415 / 180);
+	m_camLookDirection.z = sin(m_camOrientation.y * 3.1415 / 180) * cos(m_camOrientation.z * 3.1415 / 180);
+
 	m_camLookDirection.Normalize();
 
 	//create right vector from look Direction
