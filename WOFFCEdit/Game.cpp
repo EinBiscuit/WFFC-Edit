@@ -315,7 +315,7 @@ void XM_CALLCONV Game::DrawGrid(FXMVECTOR xAxis, FXMVECTOR yAxis, FXMVECTOR orig
     m_deviceResources->PIXBeginEvent(L"Draw grid");
 
     auto context = m_deviceResources->GetD3DDeviceContext();
-    context->OMSetBlendState(m_states->Opaque(), nullptr, 0xFFFFFFFF);
+	context->OMSetBlendState(m_states->Opaque(), nullptr, 0xFFFFFFFF);
     context->OMSetDepthStencilState(m_states->DepthNone(), 0);
     context->RSSetState(m_states->CullCounterClockwise());
 
