@@ -50,6 +50,7 @@ public:
 	void BuildDisplayChunk(ChunkObject *SceneChunk);
 	void SaveDisplayChunk(ChunkObject *SceneChunk);	//saves geometry et al
 	void ClearDisplayList();
+	int MousePicking();
 
 #ifdef DXTK_AUDIO
 	void NewAudioDevice();
@@ -87,6 +88,9 @@ private:
 
     // Rendering loop timer.
     DX::StepTimer                           m_timer;
+
+	//
+	RECT m_ScreenDimensions;
 
     // Input devices.
     std::unique_ptr<DirectX::GamePad>       m_gamePad;

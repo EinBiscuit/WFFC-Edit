@@ -306,22 +306,45 @@ void ToolMain::UpdateInput(MSG * msg)
 		break;
 
 	case WM_MOUSEMOVE:
-		if(m_toolInputCommands.FreeCam)
+
+		m_toolInputCommands.MPos = DirectX::XMFLOAT2(GET_X_LPARAM(msg->lParam), GET_Y_LPARAM(msg->lParam));
+
+		if (m_toolInputCommands.FreeCam)
 		{
-			//POINT point;
-			//GetCursorPos(&point);
-			//m_toolInputCommands.YawPitch
-			
+			POINT point;
+			GetCursorPos(&point);
+
+			DeltaMouseXY.x = point.x - InitialRMouseXY.x;
+			DeltaMouseXY.y = point.y - InitialRMouseXY.y;
+
+			SetCursorPos(InitialRMouseXY.x, InitialRMouseXY.y);
+		}
+		else
+		{
+			DeltaMouseXY = DirectX::XMFLOAT2(0, 0);
 		}
 		break;
 
 	case WM_RBUTTONDOWN:	//mouse button down,  you will probably need to check when its up too
 		//set some flag for the mouse button in inputcommands
 		m_toolInputCommands.FreeCam = true;
+		GetCursorPos(&InitialRMouseXY);
+		//GetCursorPos(MouseXY_old)
 		break;
 
 	case WM_RBUTTONUP:
 		m_toolInputCommands.FreeCam = false;
+		break;
+
+	case WM_LBUTTONDOWN:
+		
+		// porca madonna corcifissa incoronata e concepita in culo - Shane Philip 1902474
+		// REMOVE THIS BEFORE SUBMITTING ^
+		m_selectedObject = m_d3dRenderer.MousePicking();
+
+		break;
+
+	case WM_LBUTTONUP:
 		break;
 
 	}
@@ -376,7 +399,8 @@ void ToolMain::UpdateInput(MSG * msg)
 	}
 	else
 	{
-		m_toolInputCommands.YawPitch = DirectX::XMFLOAT2(1, 0);
+		m_toolInputCommands.YawPitch = DeltaMouseXY;
+		//DeltaMouseXY = DirectX::XMFLOAT2(0, 0);
 	}
 
 	//WASD

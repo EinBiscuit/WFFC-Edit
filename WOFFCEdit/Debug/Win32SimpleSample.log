@@ -1,11 +1,22 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(517,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Win32SimpleSample.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Game.cpp
 C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(28,20): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(152,64): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(153,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(154,64): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(149,66): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(150,66): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(153,64): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(154,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(155,64): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(271,57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(270,57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(269,57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(268,97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(254,10): warning C4101: 'Buffer': unreferenced local variable
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(269,97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(255,10): warning C4101: 'Buffer': unreferenced local variable
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(622,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(631,46): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(630,46): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(629,98): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(637,111): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(637,85): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(638,109): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(638,83): warning C4244: 'argument': conversion from 'LONG' to 'float', possible loss of data
+C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Game.cpp(645,21): warning C4018: '<': signed/unsigned mismatch
   Win32SimpleSample.vcxproj -> C:\Users\scrat\Documents\WFFC-Edit\WOFFCEdit\Debug\WoFEdit.exe

@@ -8,6 +8,13 @@ struct InputCommands
 	bool left;
 	bool Up;
 	bool Down;
+
+	bool LMsb;
+	bool RMsb;
+
+	DirectX::SimpleMath::Vector2 MPos;
+
 	DirectX::SimpleMath::Vector2 YawPitch;
 	bool FreeCam;
+
 };
