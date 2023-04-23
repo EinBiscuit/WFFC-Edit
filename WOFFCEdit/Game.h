@@ -53,6 +53,9 @@ public:
 	void ClearDisplayList();
 	int MousePicking();
 
+	void Copy(int);
+	void Paste();
+
 #ifdef DXTK_AUDIO
 	void NewAudioDevice();
 #endif
@@ -74,15 +77,12 @@ private:
 	//functionality
 	float								m_movespeed;
 
+	float								m_camRotRate;
 	//camera
-	DirectX::SimpleMath::Vector3		m_camPosition;
-	DirectX::SimpleMath::Vector3		m_camOrientation;
-	DirectX::SimpleMath::Vector3		m_camLookAt;
-	DirectX::SimpleMath::Vector3		m_camLookDirection;
-	DirectX::SimpleMath::Vector3		m_camRight;
-	float m_camRotRate;
+	Camera*								m_camera;
 
-	Camera* m_camera;
+	//COPPY PASTE
+	DisplayObject CopyObjReference;
 
 	//control variables
 	bool m_grid;							//grid rendering on / off

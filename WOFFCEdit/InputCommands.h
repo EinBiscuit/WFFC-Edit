@@ -17,6 +17,10 @@ struct InputCommands
 	DirectX::SimpleMath::Vector3 CameraPos;
 	DirectX::SimpleMath::Vector3 YawPitchRoll;
 
+	bool copy;
+	bool paste;
+	bool pasted;
+
 	bool FreeCam;
 
 };

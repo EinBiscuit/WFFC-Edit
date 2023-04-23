@@ -17,8 +17,8 @@ Camera::Camera()
 
 void Camera::update()
 {
-	//TODO  any more complex than this, and the camera should be abstracted out to somewhere else
-//camera motion is on a plane, so kill the 7 component of the look direction
+	
+	//camera motion is on a plane, so kill the 7 component of the look direction
 	SimpleMath::Vector3 planarMotionVector = Forward;
 	planarMotionVector.y = 0.0;
 

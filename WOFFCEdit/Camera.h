@@ -44,6 +44,7 @@ public:
 
 	SimpleMath::Vector3 getForward() { return Forward; }
 	SimpleMath::Vector3 getRight()   { return Right; }
+	SimpleMath::Vector3 getPosition() { return Position; }
 
 	XMMATRIX GetViewMatrix() { return ViewMatrix; };
 };

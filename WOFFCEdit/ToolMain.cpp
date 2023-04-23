@@ -288,6 +288,18 @@ void ToolMain::Tick(MSG *msg)
 		//resend scenegraph to Direct X renderer
 
 	//Renderer Update Call
+
+	if(m_toolInputCommands.copy)
+	{
+		m_d3dRenderer.Copy(m_selectedObject);
+	}
+
+	if (m_toolInputCommands.paste)
+	{
+		m_d3dRenderer.Paste();
+		m_toolInputCommands.paste = false;
+	}
+
 	m_d3dRenderer.Tick(&m_toolInputCommands);
 }
 
@@ -330,6 +342,8 @@ void ToolMain::UpdateInput(MSG * msg)
 		m_toolInputCommands.FreeCam = true;
 		GetCursorPos(&InitialRMouseXY);
 		//GetCursorPos(MouseXY_old)
+	
+
 		break;
 
 	case WM_RBUTTONUP:
@@ -417,5 +431,20 @@ void ToolMain::UpdateInput(MSG * msg)
 		//DeltaMouseXY = DirectX::XMFLOAT2(0, 0);
 	}
 
-	//WASD
+	//paste
+	if (m_keyArray['V']& m_toolInputCommands.pasted)
+	{
+		m_toolInputCommands.paste = true;
+		m_toolInputCommands.pasted= false;
+	}
+	if (!m_keyArray['V'])
+	{
+		m_toolInputCommands.pasted = true;
+	}
+
+	//copy
+	if (m_keyArray['C'])
+		m_toolInputCommands.copy = true;
+	else
+		m_toolInputCommands.copy = false;
 }
