@@ -25,7 +25,7 @@ Game::Game()
 	m_grid = false;
 
 	//functional
-	m_movespeed = 0.30;
+	m_movespeed = 20.f;
 	m_camRotRate = 3.0;
 
 	//camera
@@ -53,10 +53,12 @@ Game::Game()
 	m_camOrientation.y = 0.0f;
 	m_camOrientation.z = 0.0f;
 
+	m_camera = new Camera;
 }
 
 Game::~Game()
 {
+	if (m_camera) delete m_camera;
 
 #ifdef DXTK_AUDIO
     if (m_audEngine)
@@ -146,13 +148,13 @@ void Game::Update(DX::StepTimer const& timer)
 	Vector3 planarMotionVector = m_camLookDirection;
 	planarMotionVector.y = 0.0;
 
-	m_camOrientation.y += m_InputCommands.YawPitch.x * m_camRotRate * timer.GetElapsedSeconds();
-	m_camOrientation.z += m_InputCommands.YawPitch.y * m_camRotRate * timer.GetElapsedSeconds();
+	//m_camOrientation.y += m_InputCommands.YawPitch.x * m_camRotRate * timer.GetElapsedSeconds();
+	//m_camOrientation.z += m_InputCommands.YawPitch.y * m_camRotRate * timer.GetElapsedSeconds();
 
 	//create look direction from Euler angles in m_camOrientation
-	m_camLookDirection.x = cos(m_camOrientation.y * 3.1415 / 180) * cos(m_camOrientation.z * 3.1415 / 180);
-	m_camLookDirection.y = sin(m_camOrientation.z * 3.1415 / 180);
-	m_camLookDirection.z = sin(m_camOrientation.y * 3.1415 / 180) * cos(m_camOrientation.z * 3.1415 / 180);
+	m_camLookDirection.x = cos(m_camOrientation.y * 3.1415 / 180) * cos(m_camOrientation.x * 3.1415 / 180);
+	m_camLookDirection.y = sin(m_camOrientation.x * 3.1415 / 180);
+	m_camLookDirection.z = sin(m_camOrientation.y * 3.1415 / 180) * cos(m_camOrientation.x * 3.1415 / 180);
 
 	m_camLookDirection.Normalize();
 
@@ -186,17 +188,19 @@ void Game::Update(DX::StepTimer const& timer)
 		m_camPosition -= m_camRight*m_movespeed;
 	}
 
-	
+	Vector3 DeltaPos = m_InputCommands.CameraPos.x * m_camera->getForward() * m_movespeed * timer.GetElapsedSeconds(); // Forward
+	DeltaPos += m_InputCommands.CameraPos.z * m_camera->getRight() * m_movespeed * timer.GetElapsedSeconds(); // Right
+	DeltaPos += SimpleMath::Vector3::UnitY * m_InputCommands.CameraPos * m_movespeed * timer.GetElapsedSeconds();
 
-	//update lookat point
-	m_camLookAt = m_camPosition + m_camLookDirection;
 
-	//apply camera vectors
-    m_view = Matrix::CreateLookAt(m_camPosition, m_camLookAt, Vector3::UnitY);
+	m_camera->addPos(DeltaPos);
+	m_camera->addRot(m_InputCommands.YawPitchRoll * m_camRotRate * timer.GetElapsedSeconds());
 
-    m_batchEffect->SetView(m_view);
+	m_camera->update();
+
+    m_batchEffect->SetView(m_camera->GetViewMatrix());
     m_batchEffect->SetWorld(Matrix::Identity);
-	m_displayChunk.m_terrainEffect->SetView(m_view);
+	m_displayChunk.m_terrainEffect->SetView(m_camera->GetViewMatrix());
 	m_displayChunk.m_terrainEffect->SetWorld(Matrix::Identity);
 
 #ifdef DXTK_AUDIO
@@ -272,7 +276,7 @@ void Game::Render()
 
 		XMMATRIX local = m_world * XMMatrixTransformation(g_XMZero, Quaternion::Identity, scale, g_XMZero, rotate, translate);
 
-		m_displayList[i].m_model->Draw(context, *m_states, local, m_view, m_projection, false);	//last variable in draw,  make TRUE for wireframe
+		m_displayList[i].m_model->Draw(context, *m_states, local, m_camera->GetViewMatrix(), m_projection, false);	//last variable in draw,  make TRUE for wireframe
 
 		m_deviceResources->PIXEndEvent();
 	}
@@ -282,7 +286,7 @@ void Game::Render()
 	context->OMSetBlendState(m_states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(m_states->DepthDefault(),0);
 	context->RSSetState(m_states->CullNone());
-//	context->RSSetState(m_states->Wireframe());		//uncomment for wireframe
+	context->RSSetState(m_states->Wireframe());		//uncomment for wireframe
 
 	//Render the batch,  This is handled in the Display chunk becuase it has the potential to get complex
 	m_displayChunk.RenderBatch(m_deviceResources);
@@ -563,7 +567,7 @@ void Game::CreateWindowSizeDependentResources()
 {
     auto size = m_deviceResources->GetOutputSize();
     float aspectRatio = float(size.right) / float(size.bottom);
-    float fovAngleY = 70.0f * XM_PI / 180.0f;
+    float fovAngleY = 90.0f * XM_PI / 180.0f;
 
     // This is a simple example of change that can be made when the app is in
     // portrait or snapped view.

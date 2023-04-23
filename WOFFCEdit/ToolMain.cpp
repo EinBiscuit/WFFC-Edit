@@ -378,6 +378,7 @@ void ToolMain::UpdateInput(MSG * msg)
 		m_toolInputCommands.Up = true;
 	}
 	else m_toolInputCommands.Up = false;
+
 	if (m_keyArray['Q'])
 	{
 		m_toolInputCommands.Down = true;
@@ -385,21 +386,34 @@ void ToolMain::UpdateInput(MSG * msg)
 	else m_toolInputCommands.Down = false;
 	//rotations
 
+	if (m_keyArray['W'] | m_keyArray['S'] | m_keyArray['A'] | m_keyArray['D'] | m_keyArray['E'] | m_keyArray['Q'])
+	{
+		m_toolInputCommands.CameraPos.x = (-1 * m_keyArray['S']) + (1 * m_keyArray['W']);
+		m_toolInputCommands.CameraPos.y = (-1 * m_keyArray['E']) + (1 * m_keyArray['Q']);
+		m_toolInputCommands.CameraPos.z = (-1 * m_keyArray['A']) + (1 * m_keyArray['D']);
+	}
+	else
+	{
+		m_toolInputCommands.CameraPos = SimpleMath::Vector3(0, 0, 0);
+	}
+
+
 	if (!m_toolInputCommands.FreeCam)
 	{
 		if (m_keyArray[37] | m_keyArray[38] | m_keyArray[39] | m_keyArray[40])
 		{
-			m_toolInputCommands.YawPitch.x = (-1 * m_keyArray[37]) + (1 * m_keyArray[39]);
-			m_toolInputCommands.YawPitch.y = (-1 * m_keyArray[40]) + (1 * m_keyArray[38]);
+			m_toolInputCommands.YawPitchRoll.x = (-1 * m_keyArray[37]) + (1 * m_keyArray[39]);
+			m_toolInputCommands.YawPitchRoll.y = (-1 * m_keyArray[40]) + (1 * m_keyArray[38]);
 		}
 		else
 		{
-			m_toolInputCommands.YawPitch = DirectX::XMFLOAT2(0, 0);
+			m_toolInputCommands.YawPitchRoll = DirectX::XMFLOAT3(0, 0, 0);
 		}
 	}
 	else
 	{
-		m_toolInputCommands.YawPitch = DeltaMouseXY;
+		m_toolInputCommands.YawPitchRoll.x = DeltaMouseXY.x;
+		m_toolInputCommands.YawPitchRoll.y = -DeltaMouseXY.y;
 		//DeltaMouseXY = DirectX::XMFLOAT2(0, 0);
 	}
 
