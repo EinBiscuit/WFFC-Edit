@@ -213,6 +213,31 @@ void Game::Render()
 
 		XMMATRIX local = m_world * XMMatrixTransformation(g_XMZero, Quaternion::Identity, scale, g_XMZero, rotate, translate);
 
+		
+		if(selectedObjects.count(i))
+		m_displayList[i].m_model->UpdateEffects([&](IEffect* effect)
+			{
+				auto fog = dynamic_cast<IEffectFog*>(effect);
+				if (fog)
+				{
+					fog->SetFogEnabled(true);
+					fog->SetFogStart(0);
+					fog->SetFogEnd(4);
+					fog->SetFogColor(Colors::HotPink);
+
+				}
+			});
+		else 
+			m_displayList[i].m_model->UpdateEffects([&](IEffect* effect)
+				{
+					auto fog = dynamic_cast<IEffectFog*>(effect);
+				if (fog)
+				{
+					fog->SetFogEnabled(false);
+				}
+				});
+	
+
 		m_displayList[i].m_model->Draw(context, *m_states, local, m_camera->GetViewMatrix(), m_projection, false);	//last variable in draw,  make TRUE for wireframe
 
 		m_deviceResources->PIXEndEvent();
@@ -547,7 +572,7 @@ void Game::OnDeviceRestored()
     CreateWindowSizeDependentResources();
 }
 
-int Game::MousePicking()
+int Game::MousePicking(bool additive, bool unselect)
 {
 	int selectedID = -1;
 	float pickedDistance = 0;
@@ -597,6 +622,23 @@ int Game::MousePicking()
 					selectedID = i;
 				}
 			}
+		}
+	}
+
+	if(selectedID>-1)
+	{
+		if (!additive) selectedObjects.clear();
+
+		if(selectedObjects.count(selectedID))// has element
+		{
+			if (additive | unselect)
+			{
+				selectedObjects.erase(selectedID);
+			}
+		}
+		else 
+		{
+			selectedObjects.insert(selectedID);
 		}
 	}
 

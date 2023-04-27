@@ -51,7 +51,7 @@ public:
 	void BuildDisplayChunk(ChunkObject *SceneChunk);
 	void SaveDisplayChunk(ChunkObject *SceneChunk);	//saves geometry et al
 	void ClearDisplayList();
-	int MousePicking();
+	int  MousePicking(bool additive, bool unselect = false); //if additive multiple objects
 
 	void Copy(int);
 	void Paste();
@@ -74,6 +74,7 @@ private:
 	DisplayChunk						m_displayChunk;
 	InputCommands						m_InputCommands;
 
+	std::set<int>						selectedObjects;
 	//functionality
 	float								m_movespeed;
 
@@ -83,6 +84,7 @@ private:
 
 	//COPPY PASTE
 	DisplayObject CopyObjReference;
+	std::vector<DisplayObject> CopiedObjects;
 
 	//control variables
 	bool m_grid;							//grid rendering on / off

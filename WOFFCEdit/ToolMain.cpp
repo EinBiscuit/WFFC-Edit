@@ -351,10 +351,8 @@ void ToolMain::UpdateInput(MSG * msg)
 		break;
 
 	case WM_LBUTTONDOWN:
-		
-		// porca madonna corcifissa incoronata e concepita in culo - Shane Philip 1902474
-		// REMOVE THIS BEFORE SUBMITTING ^
-		m_selectedObject = m_d3dRenderer.MousePicking();
+
+		m_selectedObject = m_d3dRenderer.MousePicking(true);
 
 		break;
 
@@ -428,23 +426,25 @@ void ToolMain::UpdateInput(MSG * msg)
 	{
 		m_toolInputCommands.YawPitchRoll.x = DeltaMouseXY.x;
 		m_toolInputCommands.YawPitchRoll.y = -DeltaMouseXY.y;
-		//DeltaMouseXY = DirectX::XMFLOAT2(0, 0);
 	}
 
-	//paste
-	if (m_keyArray['V']& m_toolInputCommands.pasted)
+	if (GetKeyState(VK_LCONTROL)>>7)
 	{
-		m_toolInputCommands.paste = true;
-		m_toolInputCommands.pasted= false;
-	}
-	if (!m_keyArray['V'])
-	{
-		m_toolInputCommands.pasted = true;
-	}
+		//paste
+		if (m_keyArray['V'] & m_toolInputCommands.pasted)
+		{
+			m_toolInputCommands.paste = true;
+			m_toolInputCommands.pasted = false;
+		}
+		if (!m_keyArray['V'])
+		{
+			m_toolInputCommands.pasted = true;
+		}
 
-	//copy
-	if (m_keyArray['C'])
-		m_toolInputCommands.copy = true;
-	else
-		m_toolInputCommands.copy = false;
+		//copy
+		if (m_keyArray['C'])
+			m_toolInputCommands.copy = true;
+		else
+			m_toolInputCommands.copy = false;
+	}
 }

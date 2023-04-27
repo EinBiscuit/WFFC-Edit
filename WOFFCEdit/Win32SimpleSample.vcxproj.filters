@@ -17,6 +17,9 @@
     <Filter Include="SQLITE">
       <UniqueIdentifier>{a006b0b6-46b2-4c4f-808a-ec8fe3e790eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tool\Commands">
+      <UniqueIdentifier>{c72dbbdf-038c-42c7-9e34-3c6623422fdd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -60,7 +63,9 @@
       <Filter>MFC</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="Commands.cpp">
+      <Filter>Tool\Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DeviceResources.h">
@@ -111,7 +116,9 @@
       <Filter>MFC</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Command.h" />
+    <ClInclude Include="Commands.h">
+      <Filter>Tool\Commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
