@@ -10,3 +10,8 @@ void Paste::Undo()
 {
 	Command::Undo();
 }
+
+Paste::~Paste()
+{
+
+}

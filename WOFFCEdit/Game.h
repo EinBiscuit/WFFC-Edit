@@ -83,7 +83,7 @@ private:
 	Camera*								m_camera;
 
 	//COPPY PASTE
-	DisplayObject CopyObjReference;
+	//DisplayObject CopyObjReference;
 	std::vector<DisplayObject> CopiedObjects;
 
 	//control variables

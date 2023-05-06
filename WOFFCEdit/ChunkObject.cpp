@@ -1,7 +1,5 @@
 #include "ChunkObject.h"
 
-
-
 ChunkObject::ChunkObject()
 {
 }
