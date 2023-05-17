@@ -291,12 +291,12 @@ void ToolMain::Tick(MSG *msg)
 
 	if(m_toolInputCommands.copy)
 	{
-		m_d3dRenderer.Copy(m_selectedObject);
+		m_d3dRenderer.Copy();
 	}
 
 	if (m_toolInputCommands.paste)
 	{
-		m_d3dRenderer.Paste();
+	//	m_d3dRenderer.Paste();
 		m_toolInputCommands.paste = false;
 	}
 
@@ -352,7 +352,7 @@ void ToolMain::UpdateInput(MSG * msg)
 
 	case WM_LBUTTONDOWN:
 
-		m_selectedObject = m_d3dRenderer.MousePicking(true);
+		m_selectedObject = m_d3dRenderer.MousePicking(false);
 
 		break;
 

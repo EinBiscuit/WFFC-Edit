@@ -13,7 +13,10 @@
 #include "InputCommands.h"
 #include <vector>
 #include "Camera.h"
+#include "Commands.h"
 
+
+#define MAX_COMMANDS 100
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -53,8 +56,13 @@ public:
 	void ClearDisplayList();
 	int  MousePicking(bool additive, bool unselect = false); //if additive multiple objects
 
-	void Copy(int);
-	void Paste();
+	void SaveDisplayListToSceneGraph(std::vector<SceneObject> * SceneGraph); //note vector passed by reference
+
+	void Copy();
+	
+	void Do(Command&);
+	void Undo();
+	void Redo();
 
 #ifdef DXTK_AUDIO
 	void NewAudioDevice();
@@ -74,6 +82,14 @@ private:
 	DisplayChunk						m_displayChunk;
 	InputCommands						m_InputCommands;
 
+	//Gizmo
+	std::vector<DisplayObject>			Gizmo;
+
+	ID3D11DepthStencilState*			DSOverlay;
+
+	std::vector<Command>				m_CommandQ;
+	int									CurrentCommand;
+
 	std::set<int>						selectedObjects;
 	//functionality
 	float								m_movespeed;
@@ -84,7 +100,7 @@ private:
 
 	//COPPY PASTE
 	//DisplayObject CopyObjReference;
-	std::vector<DisplayObject> CopiedObjects;
+	std::vector<DisplayObject>			CopiedObjects;
 
 	//control variables
 	bool m_grid;							//grid rendering on / off

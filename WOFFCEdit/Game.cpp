@@ -30,6 +30,9 @@ Game::Game()
 
 	//camera
 	m_camera = new Camera;
+
+	m_CommandQ.reserve(MAX_COMMANDS);
+	CurrentCommand = 0;
 }
 
 Game::~Game()
@@ -61,6 +64,30 @@ void Game::Initialize(HWND window, int width, int height)
 
     m_deviceResources->CreateWindowSizeDependentResources();
     CreateWindowSizeDependentResources();
+
+	DisplayObject gizmo;
+	
+	gizmo.m_light_constant = 1.0f;
+	gizmo.m_position = Vector3(0.0f, 0.0f, 0.0f);
+	gizmo.m_scale = Vector3(0.1f, 0.1f, 0.1f);
+	gizmo.m_orientation = Vector3(0.0f, 0.0f, 0.0f);
+
+	gizmo.m_model = Model::CreateFromCMO(m_deviceResources->GetD3DDevice(), L"database/UtilityModels/Gizmo_Right.cmo", *m_fxFactory, true);
+	Gizmo.push_back(gizmo);
+	gizmo.m_model = Model::CreateFromCMO(m_deviceResources->GetD3DDevice(), L"database/UtilityModels/Gizmo_Forward.cmo", *m_fxFactory, true);
+	Gizmo.push_back(gizmo);
+	gizmo.m_model = Model::CreateFromCMO(m_deviceResources->GetD3DDevice(), L"database/UtilityModels/Gizmo_Up.cmo", *m_fxFactory, true);
+	Gizmo.push_back(gizmo);
+		
+	D3D11_DEPTH_STENCIL_DESC DSdesc;
+
+	DSdesc.DepthEnable = true;
+	DSdesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	DSdesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	DSdesc.StencilEnable = false;
+
+	if(FAILED(m_deviceResources->GetD3DDevice()->CreateDepthStencilState(&DSdesc, &DSOverlay))) throw std::exception();
+
 
 
 #ifdef DXTK_AUDIO
@@ -198,6 +225,7 @@ void Game::Render()
 	m_font->DrawString(m_sprites.get(), var.c_str() , XMFLOAT2(100, 10), Colors::Yellow);
 	m_sprites->End();
 
+
 	//RENDER OBJECTS FROM SCENEGRAPH
 	int numRenderObjects = m_displayList.size();
 	for (int i = 0; i < numRenderObjects; i++)
@@ -242,6 +270,7 @@ void Game::Render()
 
 		m_deviceResources->PIXEndEvent();
 	}
+
     m_deviceResources->PIXEndEvent();
 
 	//RENDER TERRAIN
@@ -252,6 +281,70 @@ void Game::Render()
 
 	//Render the batch,  This is handled in the Display chunk becuase it has the potential to get complex
 	m_displayChunk.RenderBatch(m_deviceResources);
+
+
+	if (selectedObjects.size())
+	{
+		//RENDER GIZMO
+
+		int sid = *selectedObjects.begin();
+
+		const XMVECTORF32 scale = { Gizmo[0].m_scale.x,  Gizmo[0].m_scale.y,  Gizmo[0].m_scale.z };
+		const XMVECTORF32 translate = { m_displayList[sid].m_position.x, m_displayList[sid].m_position.y, m_displayList[sid].m_position.z };
+
+		//convert degrees into radians for rotation matrix
+		XMVECTOR rotate = Quaternion::CreateFromYawPitchRoll(m_displayList[sid].m_orientation.y * 3.1415 / 180,
+			m_displayList[sid].m_orientation.x * 3.1415 / 180,
+			m_displayList[sid].m_orientation.z * 3.1415 / 180);
+
+		XMMATRIX local = m_world * XMMatrixTransformation(g_XMZero, Quaternion::Identity, scale, g_XMZero, rotate, translate);
+
+		std::function<void()> setCustomState = [&]()
+		{
+			float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			//context->OMSetBlendState(m_states->Additive(), blendFactor, 0xFFFFFFFF);
+			context->OMSetDepthStencilState(DSOverlay, 0);
+			//context->RSSetState(m_states->CullNone());
+			//context->RSSetState(m_states->Wireframe());
+
+			//context->OMSetDepthStencilState(DSOverlay, 0);
+		};
+
+		for (int i = 0; i < 3; i++)
+		{
+			Gizmo[i].m_model->Draw(context, *m_states, local, m_camera->GetViewMatrix(), m_projection, false, setCustomState);	// stencil in depth buffer
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+
+			if (selectedObjects.count(i))
+				Gizmo[i].m_model->UpdateEffects([&](IEffect* effect)
+					{
+						auto fog = dynamic_cast<IEffectFog*>(effect);
+						if (fog)
+						{
+							fog->SetFogEnabled(true);
+							fog->SetFogStart(0);
+							fog->SetFogEnd(4);
+							fog->SetFogColor(Colors::White);
+
+						}
+					});
+			else
+				Gizmo[i].m_model->UpdateEffects([&](IEffect* effect)
+					{
+						auto fog = dynamic_cast<IEffectFog*>(effect);
+						if (fog)
+						{
+							fog->SetFogEnabled(false);
+						}
+					});
+
+			Gizmo[i].m_model->Draw(context, *m_states, local, m_camera->GetViewMatrix(), m_projection, false);	//draw normally
+		}
+	}
+
 
     m_deviceResources->Present();
 }
@@ -437,7 +530,7 @@ void Game::BuildDisplayList(std::vector<SceneObject> * SceneGraph)
 		
 	}
 		
-		
+	m_displayList.insert(std::end(m_displayList),Gizmo.begin(),Gizmo.end()); //add gizmo to display list
 		
 }
 
@@ -620,6 +713,7 @@ int Game::MousePicking(bool additive, bool unselect)
 				{
 					min_dist = pickedDistance;
 					selectedID = i;
+
 				}
 			}
 		}
@@ -631,7 +725,7 @@ int Game::MousePicking(bool additive, bool unselect)
 
 		if(selectedObjects.count(selectedID))// has element
 		{
-			if (additive | unselect)
+			if (additive || unselect)
 			{
 				selectedObjects.erase(selectedID);
 			}
@@ -646,20 +740,47 @@ int Game::MousePicking(bool additive, bool unselect)
 	return selectedID;
 }
 
-void Game::Paste()
+void Game::SaveDisplayListToSceneGraph(std::vector<SceneObject>* SceneGraph)
 {
-	DisplayObject Copy = CopyObjReference;
-	Copy.m_position = m_camera->getPosition() + m_camera->getForward() * 2;
-	m_displayList.push_back(Copy);
 }
 
-void Game::Copy(int SO)
+void Game::Copy()
 {
-	if(SO>=0)
+	CopiedObjects.clear();
+	for (auto i : selectedObjects)
 	{
-		CopyObjReference = m_displayList[SO];
+		CopiedObjects.push_back(m_displayList[i]);
 	}
 }
+
+void Game::Do(Command& banana)
+{
+	banana.Do();
+	m_CommandQ[CurrentCommand++] = banana;
+	if (CurrentCommand > MAX_COMMANDS) CurrentCommand = 0;
+}
+
+void Game::Undo()
+{
+	CurrentCommand--;
+	if (CurrentCommand < 0)CurrentCommand = MAX_COMMANDS;
+	m_CommandQ[CurrentCommand].Undo();
+	
+}
+
+void Game::Redo()
+{
+	m_CommandQ[CurrentCommand].Do();
+	if (CurrentCommand > MAX_COMMANDS) CurrentCommand = 0;
+}
+
+//void Game::Paste()
+//{
+//	DisplayObject Copy = CopyObjReference;
+//	Copy.m_position = m_camera->getPosition() + m_camera->getForward() * 2;
+//	m_displayList.push_back(Copy);
+//}
+
 
 #pragma endregion
 

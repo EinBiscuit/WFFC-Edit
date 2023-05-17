@@ -13,9 +13,9 @@ struct Command
 	std::vector<DisplayObject>* DisplayListReference;
 	Command(std::vector<DisplayObject>* dl) { DisplayListReference = dl; };
 
-	virtual void Do();
-	virtual void Undo();
-	virtual ~Command();
+	virtual void Do() {};
+	virtual void Undo() {};
+	virtual ~Command() {};
 };
 
 struct Paste : Command
@@ -36,7 +36,7 @@ struct Paste : Command
 
 struct Move : Command
 {
-	const std::map<int,DirectX::SimpleMath::Vector3> MovedPositions;
+	std::map<int,DirectX::SimpleMath::Vector3> MovedPositions;
 	Move(std::vector<DisplayObject>* dl,const std::map<int, DirectX::SimpleMath::Vector3>& NewRelativePositions) : Command(dl) { MovedPositions = NewRelativePositions; };
 	void Do()
 	{
